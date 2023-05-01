@@ -1,0 +1,37 @@
+version: '3'
+services:
+  expresscart:
+    image: "node:12"
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    # Put your linux username here, to own the files created or modified by the container
+    user: "delta"
+    container_name: "expresscart"
+    environment:
+      NODE_ENV: development
+      NODE_PATH: /
+    ports:
+      - "1111:1111"
+    volumes:
+      - type: bind
+      # source: C: \Users\<user>\Documents\GitHub\expressCart # for windows (ruta absoluta)
+        source: .
+        target: /var/expressCart
+      - type: volume
+        source: expresscart-node-modules
+        target: /var/expressCart/node_modules
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+  mongodb:
+    image: mongo:3.4.10
+    container_name: "expresscart-mongodb"
+    volumes:
+      - expresscart-mongo-data:/data/db
+    ports:
+      - 27017:27017
+    command: mongod --smallfiles --logpath=/dev/null
+volumes:
+  expresscart-mongo-data:

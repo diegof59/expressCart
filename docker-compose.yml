@@ -1,14 +1,29 @@
 version: '3'
 services:
   expresscart:
-    image: "node:8"
-    build: .
+    image: "expresscart:latest-test"
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+      args:
+        - USER=${USER}
+        - GROUP=${GROUP}
+    env_file:
+      - .env
+    user: ${USER}
     container_name: "expresscart"
-    environment:
-      NODE_ENV: development
-      NODE_PATH: /
     ports:
       - "1111:1111"
+    volumes:
+      - type: bind
+      # For use on windows (ruta absoluta)
+      # source: C:\Users\<user>\Documents\GitHub\expressCart
+        source: .
+        target: /var/expressCart
+      # To use a named volume for node_modules
+      # - type: volume
+      #   source: node-modules
+      #   target: /var/expressCart/node_modules
     links:
       - mongodb
     depends_on:
@@ -23,3 +38,8 @@ services:
     command: mongod --smallfiles --logpath=/dev/null
 volumes:
   expresscart-mongo-data:
+  # If data volume exists with name expresscart-mongo-data
+    #external: true
+    #name: expresscart-mongo-data
+  # To use a named volume for node_modules
+  #node-modules:

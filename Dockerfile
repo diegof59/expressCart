@@ -1,6 +1,6 @@
-FROM mhart/alpine-node:8
+FROM mhart/alpine-node:12.22.3
 
-ENV NODE_VERSION 8.9.4
+ENV NODE_VERSION 12.22.3
 
 RUN apk add --no-cache make gcc g++ python bash
 
@@ -19,7 +19,7 @@ COPY deploy.js /var/expressCart/
 
 RUN npm install
 
-VOLUME /var/expressCart/data
+# VOLUME /var/expressCart/data
 
 EXPOSE 1111
 ENTRYPOINT ["npm", "start"]

@@ -7,7 +7,7 @@
     "start": "node app.js",
     "deploy": "node deploy.js",
     "testdata": "node lib/testdata.js",
-    "test": "ava",
+    "test": "node app.js",
     "dev": " pm2-dev start app.js",
     "lint": "eslint ./"
   },

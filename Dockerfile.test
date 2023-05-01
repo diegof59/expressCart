@@ -1,0 +1,23 @@
+FROM mhart/alpine-node:12.22.3
+
+ENV NODE_VERSION 12.22.3
+ARG USER
+ARG GROUP
+
+RUN apk add --no-cache make gcc g++ python bash
+
+# Put your linux username and its group here, to own the files created or modified by the container
+RUN addgroup -S $GROUP && \
+adduser -S $USER -G $GROUP
+
+WORKDIR /var/expressCart
+
+EXPOSE 1111
+
+# Every containter run will run this command,
+# which will install all the dependencies if these are not installed (npm install)
+# and run the app. Uses default Entrypoint (execute commands from bash)
+# CMD npm install ; npm run test
+
+# To use as entrypoint when only running the app without checking dependencies
+ENTRYPOINT ["npm", "run", "test"]

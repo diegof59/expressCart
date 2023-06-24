@@ -57,10 +57,11 @@ router.get('/admin/products/filter/:search', restrict, async (req, res, next) =>
     const results = await db.products.find({ _id: { $in: lunrIdArray } }).toArray();
 
     if(req.apiAuthenticated){
+        connsole.log("results", results);
         res.status(200).json(results);
         return;
     }
-
+    console.log("body", res.body);
     res.render('products', {
         title: 'Results',
         results: results,

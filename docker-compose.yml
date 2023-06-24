@@ -8,6 +8,7 @@ services:
       args:
         - USER=${USER}
         - GROUP=${GROUP}
+    entrypoint: npm start #run dev
     env_file:
       - .env
     user: ${USER}
@@ -32,12 +33,12 @@ services:
     image: mongo:3.4.10
     container_name: "expresscart-mongodb"
     volumes:
-      - expresscart-mongo-data:/data/db
+      - mongo-data:/data/db
     ports:
       - 27017:27017
     command: mongod --smallfiles --logpath=/dev/null
 volumes:
-  expresscart-mongo-data:
+  mongo-data:
   # If data volume exists with name expresscart-mongo-data
     #external: true
     #name: expresscart-mongo-data

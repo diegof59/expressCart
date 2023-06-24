@@ -10,7 +10,7 @@ This is a fork of mrvautin's expressCart. I fixed the deployment on Docker by up
 
 --
 
-Este es un fork de expressCart de mrvautin. He arreglado el despliegue sobre Docker, actualizando los Dockerfile y docker-compose.yaml(ahora docker-compose.dev.yaml). He agregado un Dockerfile.test y cambiado el docker-compose.yaml para desplegar un ambiente en ambiente de pruebas. El objetivo inicial de este proyecto es implementar casos de prueba, tanto funcionales como no funcionales.
+Este es un fork de expressCart de mrvautin. He arreglado el despliegue sobre Docker, actualizando los Dockerfile y docker-compose.yaml(ahora docker-compose.dev.yaml). He agregado un Dockerfile.test y cambiado el docker-compose.yaml para desplegar un ambiente de pruebas. El objetivo inicial de este proyecto es implementar casos de prueba, tanto funcionales como no funcionales.
 
 ## Installation
 

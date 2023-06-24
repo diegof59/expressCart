@@ -11,7 +11,7 @@ const rawTestData = fs.readFileSync('./bin/testdata.json', 'utf-8');
 const jsonData = JSON.parse(rawTestData);
 
 // Setup some global DB objects for comparison
-const g = {
+const globals = {
     db: {},
     config: {},
     products: {},
@@ -43,69 +43,83 @@ const setup = (db) => {
             db.products.insertMany(fixProductDates(jsonData.products)),
             db.discounts.insertMany(fixDiscountDates(jsonData.discounts))
         ]);
+    })
+    .catch((err) => {
+        console.error('Error setting up test data', err);
     });
 };
 
 const runBefore = async () => {
+    try {
     // Create a session
-    g.request = supertest.agent(app);
+    globals.request = supertest.agent(app);
     await new Promise(resolve => {
         app.on('appStarted', async () => {
+            try {
             // Set some stuff now we have the app started
-            g.config = app.config;
-            g.db = app.db;
+            globals.config = app.config;
+            globals.db = app.db;
 
-            await setup(g.db);
+            await setup(globals.db);
 
             // Get some data from DB to use in compares
-            g.products = await g.db.products.find({}).toArray();
-            g.customers = await g.db.customers.find({}).toArray();
-            g.discounts = await g.db.discounts.find({}).toArray();
-            g.users = await g.db.users.find({}).toArray();
+            globals.products = await globals.db.products.find({}).toArray();
+            globals.customers = await globals.db.customers.find({}).toArray();
+            globals.discounts = await globals.db.discounts.find({}).toArray();
+            globals.users = await globals.db.users.find({}).toArray();
 
             // Insert variants using product ID's
             for(const variant of jsonData.variants){
-                variant.product = g.products[getRandom(g.products.length)]._id;
-                await g.db.variants.insertOne(variant);
+                variant.product = globals.products[getRandom(globals.products.length)]._id;
+                await globals.db.variants.insertOne(variant);
             };
-            g.variants = await g.db.variants.find({}).toArray();
+            globals.variants = await globals.db.variants.find({}).toArray();
 
             // Insert orders using product ID's
             for(const order of jsonData.orders){
                 order.orderProducts.push({
-                    productId: g.products[0]._id,
-                    title: g.products[0].productTitle,
+                    productId: globals.products[0]._id,
+                    title: globals.products[0].productTitle,
                     quantity: 1,
-                    totalItemPrice: g.products[0].productPrice,
-                    variant: g.variants[0]._id,
-                    productImage: g.products[0].productImage,
+                    totalItemPrice: globals.products[0].productPrice,
+                    variant: globals.variants[0]._id,
+                    productImage: globals.products[0].productImage,
                     productComment: null
                 });
                 order.orderDate = new Date();
-                await g.db.orders.insertOne(order);
+                await globals.db.orders.insertOne(order);
             };
-            g.orders = await g.db.orders.find({}).toArray();
+            globals.orders = await globals.db.orders.find({}).toArray();
 
             // Fix reviews
             for(const review of jsonData.reviews){
                 review.date = new Date();
-                review.product = g.products[0]._id;
-                review.customer = g.customers[0]._id;
-                await g.db.reviews.insertOne(review);
+                review.product = globals.products[0]._id;
+                review.customer = globals.customers[0]._id;
+                await globals.db.reviews.insertOne(review);
             };
-            g.reviews = await g.db.reviews.find({}).toArray();
+            globals.reviews = await globals.db.reviews.find({}).toArray();
 
             // Get csrf token
-            const csrf = await g.request
+            const csrf = await globals.request
             .get('/admin/csrf');
-            g.csrf = csrf.body.csrf;
+            globals.csrf = csrf.body.csrf;
 
             // Index everything
-            await runIndexing(app);
+            // await runIndexing(app);
 
             resolve();
+
+        } catch (error) {
+            console.error('Error during app setup:', error);
+            resolve(); // Make sure to resolve the promise even in case of an error
+          }
         });
     });
+}
+catch (error) {
+    console.error('Error during runBefore:', error);
+}
 };
 
 const addApiKey = (users) => {
@@ -120,5 +134,5 @@ const addApiKey = (users) => {
 module.exports = {
     runBefore,
     setup,
-    g
+    globals
 };

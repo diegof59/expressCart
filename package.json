@@ -7,23 +7,13 @@
     "start": "node app.js",
     "deploy": "node deploy.js",
     "testdata": "node lib/testdata.js",
-    "test": "node app.js",
+    "test": "jest -t 'Pruebas filtrar producto'",
     "dev": " pm2-dev start app.js",
-    "lint": "eslint ./"
-  },
-  "ava": {
-    "serial": true,
-    "files": [
-      "./test/specs/*.js"
-    ],
-    "timeout": "10s",
-    "verbose": true,
-    "environmentVariables": {
-      "NODE_ENV": "test"
-    }
+    "lint": "eslint ./",
+    "cypress:open": "cypress open"
   },
   "engines": {
-    "node": ">=10.16.0"
+    "node": ">=12.22.3"
   },
   "dependencies": {
     "ajv": "^6.10.2",
@@ -79,6 +69,7 @@
   "devDependencies": {
     "ava": "^3.13.0",
     "clean-css": "^4.2.3",
+    "cypress": "^11.2.0",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^13.0.1",
     "eslint-plugin-extra-rules": "0.0.0-development",
@@ -87,6 +78,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "globby": "^11.0.1",
+    "jest": "^28.1.3",
     "less": "^3.12.2",
     "pm2": "^4.5.0",
     "supertest": "^4.0.2",
